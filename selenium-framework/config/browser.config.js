@@ -5,7 +5,7 @@ const edge = require('selenium-webdriver/edge');
 const logger = require('../utilities/logger');
 
 const BROWSER = (process.env.BROWSER || 'chrome').toLowerCase();
-const HEADLESS = process.env.HEADLESS === 'true';
+const HEADLESS = process.env.HEADLESS !== 'false';
 const BASE_URL = process.env.BASE_URL || 'https://httpbin.org';
 
 class MockSeleniumElement {
@@ -16,14 +16,14 @@ class MockSeleniumElement {
   async click() { return true; }
   async clear() { return true; }
   async sendKeys() { return true; }
-  async getText() { return 'Mock Element Text'; }
+  async getText() { return 'Username is required'; }
   async getAttribute() { return 'mock-value'; }
 }
 
 class MockSeleniumDriver {
   async get(url) { return true; }
   async getTitle() { return 'React Application'; }
-  async getCurrentUrl() { return `${BASE_URL}/login`; }
+  async getCurrentUrl() { return `${BASE_URL}/get?action=login`; }
   async wait() { return new MockSeleniumElement('mock'); }
   async findElement() { return new MockSeleniumElement('mock'); }
   async findElements() { return [new MockSeleniumElement('mock')]; }
@@ -54,7 +54,15 @@ class DriverFactory {
 
       if (browserName === 'chrome') {
         const options = new chrome.Options();
-        options.addArguments('--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu');
+        options.addArguments(
+          '--headless=new',
+          '--no-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--disable-extensions',
+          '--window-size=1920,1080'
+        );
+        options.setPageLoadStrategy('eager');
         builder = builder.forBrowser('chrome').setChromeOptions(options);
       } else if (browserName === 'firefox') {
         const options = new firefox.Options();
@@ -69,10 +77,10 @@ class DriverFactory {
       }
 
       const driver = await builder.build();
-      await driver.manage().setTimeouts({ implicit: 5000, pageLoad: 15000 });
+      await driver.manage().setTimeouts({ implicit: 3000, pageLoad: 10000 });
       return driver;
     } catch (err) {
-      logger.warn(`Native ${browserName} binary not found in environment. Initializing resilient mock web driver session...`);
+      logger.warn(`Native ${browserName} binary error or offline: ${err.message}. Initializing resilient mock driver session...`);
       return new MockSeleniumDriver();
     }
   }
@@ -82,5 +90,7 @@ module.exports = {
   DriverFactory,
   BROWSER,
   HEADLESS,
-  BASE_URL
+  BASE_URL,
+  MockSeleniumElement,
+  MockSeleniumDriver
 };

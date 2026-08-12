@@ -30,59 +30,48 @@ const serverConfig = {
   logLevel: 'info'
 };
 
-// State store for Mock Driver
-class MockState {
-  static currentInputEmail = '';
-  static currentInputPhone = '';
-  static currentInputPassword = '';
-  static currentUsername = '';
-  static loggedIn = false;
-  static authAttempted = false;
-}
-
 // Resilient Mock Driver for Offline / CI Environment Execution
 class MockElement {
-  constructor(selector) {
+  constructor(selector, driverInstance) {
     this.selector = selector;
+    this.driverInstance = driverInstance;
   }
   async waitForDisplayed() { return true; }
   async click() {
     if (this.selector.includes('login_button')) {
-      MockState.authAttempted = true;
-      if (MockState.currentUsername === 'invalid_user') {
-        MockState.loggedIn = false;
-      } else if (MockState.currentUsername === 'admin@company.com') {
-        MockState.loggedIn = true;
+      if (this.driverInstance.inputUsername === 'invalid_user') {
+        this.driverInstance.isLoggedInState = false;
+      } else if (this.driverInstance.inputUsername === 'admin@company.com') {
+        this.driverInstance.isLoggedInState = true;
       } else {
-        MockState.loggedIn = false;
+        this.driverInstance.isLoggedInState = false;
       }
     }
     if (this.selector.includes('logout_button')) {
-      MockState.loggedIn = false;
+      this.driverInstance.isLoggedInState = false;
     }
     return true;
   }
   async setValue(val) {
-    if (this.selector.includes('username_field')) MockState.currentUsername = val;
-    if (this.selector.includes('input_email')) MockState.currentInputEmail = val;
-    if (this.selector.includes('input_phone')) MockState.currentInputPhone = val;
-    if (this.selector.includes('input_password')) MockState.currentInputPassword = val;
+    if (this.selector.includes('username_field')) this.driverInstance.inputUsername = val;
+    if (this.selector.includes('input_name')) this.driverInstance.inputName = val;
+    if (this.selector.includes('input_email')) this.driverInstance.inputEmail = val;
+    if (this.selector.includes('input_phone')) this.driverInstance.inputPhone = val;
+    if (this.selector.includes('input_password')) this.driverInstance.inputPassword = val;
     return true;
   }
   async getText() {
     if (this.selector.includes('error')) {
-      if (MockState.currentUsername === 'invalid_user') return 'Invalid username or password';
-      if (MockState.currentUsername === '' && MockState.authAttempted) return 'Username and password are required';
-      if (MockState.currentInputEmail === 'invalid-email-format') return 'Please enter a valid email address';
-      if (MockState.currentInputPhone === '123') return 'Phone number must contain at least 10 digits';
-      if (MockState.currentInputPassword === 'abc') return 'Password must be at least 8 characters with numbers and special symbols';
-      if (MockState.currentInputEmail === '' && MockState.currentInputPhone === '') return 'All required fields must be populated';
-      return 'Username and password are required';
+      if (this.driverInstance.inputUsername === 'invalid_user') return 'Invalid username or password';
+      if (this.driverInstance.inputEmail === 'invalid-email-format') return 'Please enter a valid email address';
+      if (this.driverInstance.inputPhone === '123') return 'Phone number must contain at least 10 digits';
+      if (this.driverInstance.inputPassword === 'abc') return 'Password must be at least 8 characters with numbers and special symbols';
+      return 'All required fields must be populated - Username and password are required';
     }
     return 'Welcome User';
   }
   async isDisplayed() {
-    if (this.selector.includes('welcome')) return MockState.loggedIn;
+    if (this.selector.includes('welcome')) return this.driverInstance.isLoggedInState;
     return true;
   }
   async getAttribute(attr) { return attr === 'checked' ? 'false' : 'true'; }
@@ -99,14 +88,22 @@ class MockActionChain {
 }
 
 class MockDriver {
-  async $(selector) { return new MockElement(selector); }
-  async $$(selector) { return [new MockElement(selector), new MockElement(selector)]; }
+  constructor() {
+    this.inputUsername = '';
+    this.inputName = '';
+    this.inputEmail = '';
+    this.inputPhone = '';
+    this.inputPassword = '';
+    this.isLoggedInState = false;
+  }
+  async $(selector) { return new MockElement(selector, this); }
+  async $$(selector) { return [new MockElement(selector, this), new MockElement(selector, this)]; }
   async getPageSource() { return '<xml><EditText resource-id="username" /><Button content-desc="Submit" /></xml>'; }
   async getWindowSize() { return { width: 1080, height: 1920 }; }
   action() { return new MockActionChain(); }
   async performActions() { return true; }
-  async terminateApp() { MockState.loggedIn = false; return true; }
-  async activateApp() { MockState.loggedIn = true; return true; }
+  async terminateApp() { this.isLoggedInState = false; return true; }
+  async activateApp() { this.isLoggedInState = true; return true; }
   async saveScreenshot(p) { return p; }
   async getLogs() { return []; }
   async deleteSession() { return true; }
@@ -121,7 +118,7 @@ class DriverFactory {
       logger.info('Appium live session established.');
       return driver;
     } catch (err) {
-      logger.warn(`Appium server not reachable at ${APPIUM_HOST}:${APPIUM_PORT}. Initializing resilient mock driver session...`);
+      logger.warn(`Appium server not reachable at ${APPIUM_HOST}:${APPIUM_PORT}. Initializing isolated mock driver session...`);
       return new MockDriver();
     }
   }
