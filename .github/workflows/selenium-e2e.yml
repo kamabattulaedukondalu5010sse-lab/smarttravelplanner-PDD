@@ -34,15 +34,15 @@ jobs:
           cd selenium-framework
           npm install
 
-      - name: 5. Run Selenium E2E & Dynamic Route Tests
+      - name: 5. Execute Selenium E2E & Dynamic Route Suite
         env:
           BROWSER: ${{ matrix.browser }}
           HEADLESS: "true"
         run: |
           cd selenium-framework
-          npm test || true
+          npm test
 
-      - name: 6. Upload Selenium E2E Artifacts
+      - name: 6. Upload Selenium E2E Reports & Artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -29,12 +29,13 @@ jobs:
       - name: 4. Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 5. Enable KVM virtualization for Android Emulator
+      - name: 5. Enable KVM for emulator acceleration
         run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm-nodes.rules
-          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
-      - name: 6. Install Appium 2.x & UiAutomator2 Driver
+      - name: 6. Install Appium 2.x Server & Drivers
         run: |
           npm install -g appium
           appium driver install uiautomator2
@@ -47,19 +48,18 @@ jobs:
       - name: 8. Run Appium Android Emulator & E2E Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
-          target: default
+          api-level: 33
+          target: google_apis
           arch: x86_64
-          profile: Pixel_4
+          profile: pixel
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: |
-            # Start Appium server in background
-            appium --log appium-server.log &
-            sleep 10
-            
             cd appium-framework
-            npm test || true
+            npm test
 
-      - name: 9. Upload E2E Test Artifacts
+      - name: 9. Upload E2E Test Reports & Artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
