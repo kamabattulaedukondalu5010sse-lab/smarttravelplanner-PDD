@@ -1,0 +1,310 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 5,
+    "passes": 2,
+    "pending": 0,
+    "failures": 3,
+    "start": "2026-08-12T05:04:23.288Z",
+    "end": "2026-08-12T05:06:04.444Z",
+    "duration": 101156,
+    "testsRegistered": 5,
+    "passPercent": 40,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "7db2073f-fd0b-4e35-8a56-b85e021fc077",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1f0e3e4e-8b10-4587-9d35-b93d91e0e70b",
+          "title": "React Web Application - Dynamic Route & Form Validation Discovery Suite",
+          "fullFile": "C:\\Projects\\smartTravelPlanner\\smartTravelPlanner\\selenium-framework\\tests\\dynamicRoutes.test.js",
+          "file": "\\tests\\dynamicRoutes.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"React Web Application - Dynamic Route & Form Validation Discovery Suite\"",
+              "fullTitle": "React Web Application - Dynamic Route & Form Validation Discovery Suite \"before all\" hook in \"React Web Application - Dynamic Route & Form Validation Discovery Suite\"",
+              "timedOut": false,
+              "duration": 7049,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverFactory.createDriver();",
+              "err": {},
+              "uuid": "58c74ca0-e3c3-4468-825a-8264fbee2932",
+              "parentUUID": "1f0e3e4e-8b10-4587-9d35-b93d91e0e70b",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"React Web Application - Dynamic Route & Form Validation Discovery Suite\"",
+              "fullTitle": "React Web Application - Dynamic Route & Form Validation Discovery Suite \"after all\" hook in \"React Web Application - Dynamic Route & Form Validation Discovery Suite\"",
+              "timedOut": false,
+              "duration": 162,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "72816372-dea3-4e65-8cc6-e9381b2c94f1",
+              "parentUUID": "1f0e3e4e-8b10-4587-9d35-b93d91e0e70b",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "TC-DYN-01: Auto-scan React routes and execute dynamic form validation rules",
+              "fullTitle": "React Web Application - Dynamic Route & Form Validation Discovery Suite TC-DYN-01: Auto-scan React routes and execute dynamic form validation rules",
+              "timedOut": false,
+              "duration": 38848,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Scanning React routes automatically...');\nconst discoveredRoutes = routeScanner.scanReactRoutes();\nexpect(discoveredRoutes).to.be.an('array').that.is.not.empty;\nlogger.info(`Discovered ${discoveredRoutes.length} React routes. Executing dynamic test generator...`);\nconst results = await DynamicTestGenerator.executeDynamicRouteTests(driver, discoveredRoutes, BASE_URL);\nexpect(results).to.be.an('array');\n\nresults.forEach(res => {\n  logger.info(`Dynamic Scenario Result [${res.scenario}]: ${res.status}`);\n  expect(res.status).to.equal('PASSED');\n});",
+              "err": {},
+              "uuid": "fefa6fdb-2996-477e-85fb-64ba1899c01f",
+              "parentUUID": "1f0e3e4e-8b10-4587-9d35-b93d91e0e70b",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "fefa6fdb-2996-477e-85fb-64ba1899c01f"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 38848,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 180000
+        },
+        {
+          "uuid": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+          "title": "React Web Application - E2E Selenium Test Suite",
+          "fullFile": "C:\\Projects\\smartTravelPlanner\\smartTravelPlanner\\selenium-framework\\tests\\e2e.test.js",
+          "file": "\\tests\\e2e.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite \"before all\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "timedOut": false,
+              "duration": 816,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "logger.info('Starting Selenium E2E Web Test Suite...');\ndriver = await DriverFactory.createDriver();\nloginPage = new LoginPage(driver);\nformPage = new DynamicFormPage(driver);",
+              "err": {},
+              "uuid": "155cf80c-d345-42c8-85d4-00a88d08283c",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite \"after all\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "timedOut": false,
+              "duration": 313,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) {\n  await driver.quit();\n  logger.info('Browser session closed.');\n}\nconst duration = `${Math.round((Date.now() - startTime) / 1000)}s`;\nawait excelReporter.generateReport(duration);",
+              "err": {},
+              "uuid": "ede89f0a-91bc-4b3b-9d15-80c30a65576e",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": true,
+              "skipped": false
+            },
+            {
+              "title": "\"after each\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite \"after each\" hook in \"React Web Application - E2E Selenium Test Suite\"",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const testTitle = this.currentTest.title;\nconst testDuration = `${this.currentTest.duration || 0}ms`;\nif (this.currentTest.state === 'failed') {\n  const currentUrl = await driver.getCurrentUrl().catch(() => 'N/A');\n  const screenshotPath = await loginPage.captureFailureScreenshot(testTitle);\n  excelReporter.addFailedTest(testTitle, this.currentTest.err.message, screenshotPath, process.env.BROWSER || 'chrome', currentUrl);\n  excelReporter.addTestCase(`TC-SEL-${Date.now()}`, 'Web E2E', testTitle, process.env.BROWSER || 'chrome', 'FAILED', new Date().toISOString(), new Date().toISOString(), testDuration);\n  excelReporter.addLog(testTitle, 'Test Execution', 'FAILED', this.currentTest.err.message);\n} else if (this.currentTest.state === 'passed') {\n  excelReporter.addTestCase(`TC-SEL-${Date.now()}`, 'Web E2E', testTitle, process.env.BROWSER || 'chrome', 'PASSED', new Date().toISOString(), new Date().toISOString(), testDuration);\n  excelReporter.addLog(testTitle, 'Test Execution', 'PASSED', 'Successfully executed scenario');\n}",
+              "err": {},
+              "uuid": "ad4abc47-8a45-48fe-98ff-c3eb642aacbb",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "TC-SEL-01: Validate login with empty credentials",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite TC-SEL-01: Validate login with empty credentials",
+              "timedOut": false,
+              "duration": 15013,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await loginPage.openUrl(`${BASE_URL}/login`);\nawait loginPage.login('', '');\nconst errMsg = await loginPage.getErrorMessage().catch(() => 'Username is required');\nexpect(errMsg).to.be.a('string');",
+              "err": {
+                "message": "TimeoutError: timeout: Timed out receiving message from renderer: -0.003\n  (Session info: chrome=151.0.7922.108)",
+                "estack": "TimeoutError: timeout: Timed out receiving message from renderer: -0.003\n  (Session info: chrome=151.0.7922.108)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async LoginPage.openUrl (pages\\BasePage.js:14:5)\n    at async Context.<anonymous> (tests\\e2e.test.js:48:5)",
+                "diff": null
+              },
+              "uuid": "16b337d3-7173-4a31-b707-4f7b205d2852",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC-SEL-02: Validate login with invalid credentials",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite TC-SEL-02: Validate login with invalid credentials",
+              "timedOut": false,
+              "duration": 15022,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await loginPage.openUrl(`${BASE_URL}/login`);\nawait loginPage.login('invalid_user', 'WrongPass123!');\nconst errMsg = await loginPage.getErrorMessage().catch(() => 'Invalid username or password');\nexpect(errMsg).to.be.a('string');",
+              "err": {
+                "message": "TimeoutError: timeout: Timed out receiving message from renderer: -0.011\n  (Session info: chrome=151.0.7922.108)",
+                "estack": "TimeoutError: timeout: Timed out receiving message from renderer: -0.011\n  (Session info: chrome=151.0.7922.108)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async LoginPage.openUrl (pages\\BasePage.js:14:5)\n    at async Context.<anonymous> (tests\\e2e.test.js:55:5)",
+                "diff": null
+              },
+              "uuid": "87738010-41b1-4a66-b775-933db40c33b1",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC-SEL-03: Validate successful login and navigation",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite TC-SEL-03: Validate successful login and navigation",
+              "timedOut": false,
+              "duration": 15013,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await loginPage.openUrl(`${BASE_URL}/login`);\nawait loginPage.login('user@example.com', 'ValidPass123!');\nconst isDashboard = await loginPage.isDashboardDisplayed().catch(() => false);\nexpect(isDashboard).to.be.a('boolean');",
+              "err": {
+                "message": "TimeoutError: timeout: Timed out receiving message from renderer: -0.002\n  (Session info: chrome=151.0.7922.108)",
+                "estack": "TimeoutError: timeout: Timed out receiving message from renderer: -0.002\n  (Session info: chrome=151.0.7922.108)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async LoginPage.openUrl (pages\\BasePage.js:14:5)\n    at async Context.<anonymous> (tests\\e2e.test.js:62:5)",
+                "diff": null
+              },
+              "uuid": "b099a329-c825-4efd-adfd-a4954fdeecd4",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC-SEL-04: Validate browser back and forward navigation",
+              "fullTitle": "React Web Application - E2E Selenium Test Suite TC-SEL-04: Validate browser back and forward navigation",
+              "timedOut": false,
+              "duration": 8721,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.get(`${BASE_URL}/login`);\nawait driver.get(`${BASE_URL}/register`);\nawait driver.navigate().back();\nconst currentUrl = await driver.getCurrentUrl();\nexpect(currentUrl).to.include('/login');\nawait driver.navigate().forward();\nconst forwardUrl = await driver.getCurrentUrl();\nexpect(forwardUrl).to.include('/register');",
+              "err": {},
+              "uuid": "09ba361f-94ad-47bf-820c-9ecd8b17bc27",
+              "parentUUID": "9a6a0dfa-ddf3-47b2-8ca4-fc164e2cbf31",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "09ba361f-94ad-47bf-820c-9ecd8b17bc27"
+          ],
+          "failures": [
+            "16b337d3-7173-4a31-b707-4f7b205d2852",
+            "87738010-41b1-4a66-b775-933db40c33b1",
+            "b099a329-c825-4efd-adfd-a4954fdeecd4"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 53769,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 120000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 90000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.8.2"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": true,
+        "reportFilename": "index",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports",
+        "reportFilename": "index",
+        "quiet": "true",
+        "overwrite": "true",
+        "html": "true",
+        "json": "true"
+      },
+      "version": "6.3.2"
+    }
+  }
+}
