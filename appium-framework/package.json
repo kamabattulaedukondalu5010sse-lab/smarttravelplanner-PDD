@@ -1,0 +1,33 @@
+{
+  "name": "appium-react-native-android-framework",
+  "version": "2.0.0",
+  "description": "Enterprise Appium 2.x E2E Automation Framework for React Native Android apps with Smart AI Testing, Excel reporting, and Winston logging",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --config .mocharc.json tests/**/*.test.js",
+    "test:auth": "mocha --config .mocharc.json tests/auth.test.js",
+    "test:forms": "mocha --config .mocharc.json tests/forms.test.js",
+    "test:ai": "mocha --config .mocharc.json tests/ai.test.js"
+  },
+  "keywords": [
+    "appium",
+    "react-native",
+    "android",
+    "mocha",
+    "chai",
+    "exceljs",
+    "winston",
+    "mochawesome"
+  ],
+  "author": "Senior QA Automation Architect",
+  "license": "ISC",
+  "dependencies": {
+    "webdriverio": "^8.24.0",
+    "exceljs": "^4.3.0",
+    "winston": "^3.11.0",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.10",
+    "mochawesome": "^7.1.3",
+    "dotenv": "^16.3.1"
+  }
+}

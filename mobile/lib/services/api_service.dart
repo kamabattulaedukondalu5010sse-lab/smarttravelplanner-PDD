@@ -11,13 +11,97 @@ class ApiService {
 
   // Local Mock Store (Mutable for demo/fallback purposes)
   final List<Destination> _mockDestinations = [
-    Destination(id: 'd1', name: 'Goa', description: 'Beach Paradise with scenic views, palm trees, and vibrant nightlife.', imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80', rating: 4.8, costFactor: 1.0, category: 'Beach', lat: 15.2993, lng: 74.1240),
-    Destination(id: 'd2', name: 'Manali', description: 'Snow Mountains, adventure sports, and scenic valley drives.', imageUrl: 'https://images.unsplash.com/photo-1596701062351-dfc21a4d80a5?auto=format&fit=crop&w=500&q=80', rating: 4.7, costFactor: 1.2, category: 'Mountain', lat: 32.2396, lng: 77.1887),
-    Destination(id: 'd3', name: 'Kerala', description: 'God\'s Own Country with serene backwaters, houseboats, and greenery.', imageUrl: 'https://images.unsplash.com/photo-1602216056096-3c40cc0c9944?auto=format&fit=crop&w=500&q=80', rating: 4.6, costFactor: 1.1, category: 'Nature', lat: 10.8505, lng: 76.2711),
-    Destination(id: 'd4', name: 'Dubai', description: 'Luxury & Adventure, tallest buildings, deserts, and shopping malls.', imageUrl: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=500&q=80', rating: 4.9, costFactor: 2.5, category: 'Luxury', lat: 25.2048, lng: 55.2708),
-    Destination(id: 'd5', name: 'Shimla', description: 'Beautiful hill station, heritage train, and colonial architecture.', imageUrl: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=500&q=80', rating: 4.5, costFactor: 1.1, category: 'Mountain', lat: 31.1048, lng: 77.1734),
-    Destination(id: 'd6', name: 'Jaipur', description: 'The Pink City, magnificent palaces, forts, and rich heritage.', imageUrl: 'https://images.unsplash.com/photo-1477584305590-38772bfc1937?auto=format&fit=crop&w=500&q=80', rating: 4.7, costFactor: 1.15, category: 'Heritage', lat: 26.9124, lng: 75.7873),
-    Destination(id: 'd7', name: 'Leh Ladakh', description: 'Stunning high-altitude desert, lakes, monasteries, and adventure.', imageUrl: 'https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&w=500&q=80', rating: 4.9, costFactor: 1.5, category: 'Adventure', lat: 34.1526, lng: 77.5770),
+    Destination(
+      id: 'd1',
+      name: 'Goa',
+      description:
+          'Beach Paradise with scenic views, palm trees, and vibrant nightlife.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80',
+      rating: 4.8,
+      costFactor: 1.0,
+      category: 'Beach',
+      lat: 15.2993,
+      lng: 74.1240,
+    ),
+    Destination(
+      id: 'd2',
+      name: 'Manali',
+      description:
+          'Snow Mountains, adventure sports, and scenic valley drives.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1596701062351-dfc21a4d80a5?auto=format&fit=crop&w=500&q=80',
+      rating: 4.7,
+      costFactor: 1.2,
+      category: 'Mountain',
+      lat: 32.2396,
+      lng: 77.1887,
+    ),
+    Destination(
+      id: 'd3',
+      name: 'Kerala',
+      description:
+          'God\'s Own Country with serene backwaters, houseboats, and greenery.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1602216056096-3c40cc0c9944?auto=format&fit=crop&w=500&q=80',
+      rating: 4.6,
+      costFactor: 1.1,
+      category: 'Nature',
+      lat: 10.8505,
+      lng: 76.2711,
+    ),
+    Destination(
+      id: 'd4',
+      name: 'Dubai',
+      description:
+          'Luxury & Adventure, tallest buildings, deserts, and shopping malls.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=500&q=80',
+      rating: 4.9,
+      costFactor: 2.5,
+      category: 'Luxury',
+      lat: 25.2048,
+      lng: 55.2708,
+    ),
+    Destination(
+      id: 'd5',
+      name: 'Shimla',
+      description:
+          'Beautiful hill station, heritage train, and colonial architecture.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=500&q=80',
+      rating: 4.5,
+      costFactor: 1.1,
+      category: 'Mountain',
+      lat: 31.1048,
+      lng: 77.1734,
+    ),
+    Destination(
+      id: 'd6',
+      name: 'Jaipur',
+      description:
+          'The Pink City, magnificent palaces, forts, and rich heritage.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1477584305590-38772bfc1937?auto=format&fit=crop&w=500&q=80',
+      rating: 4.7,
+      costFactor: 1.15,
+      category: 'Heritage',
+      lat: 26.9124,
+      lng: 75.7873,
+    ),
+    Destination(
+      id: 'd7',
+      name: 'Leh Ladakh',
+      description:
+          'Stunning high-altitude desert, lakes, monasteries, and adventure.',
+      imageUrl:
+          'https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&w=500&q=80',
+      rating: 4.9,
+      costFactor: 1.5,
+      category: 'Adventure',
+      lat: 34.1526,
+      lng: 77.5770,
+    ),
   ];
 
   late final List<Trip> _mockTrips = [
@@ -35,16 +119,72 @@ class ApiService {
       status: 'upcoming',
       itinerary: {
         'Day 1': [
-          Activity(time: '09:00 AM', title: 'Arrive in Goa', description: 'Arrive at Madgaon Station, take cab to hotel.', cost: 1200, category: 'transport', lat: 15.2736, lng: 73.9582),
-          Activity(time: '12:00 PM', title: 'Check-in at Hotel', description: 'Check-in at Beach Resort Goa (Deluxe Room).', cost: 0, category: 'stay', lat: 15.5494, lng: 73.7535),
-          Activity(time: '04:00 PM', title: 'Calangute Beach', description: 'Relax at the beach side and enjoy sunset.', cost: 500, category: 'activities', lat: 15.5442, lng: 73.7550),
-          Activity(time: '08:00 PM', title: 'Dinner at Beach Shack', description: 'Have local Goan curry at the shack.', cost: 1200, category: 'food', lat: 15.5550, lng: 73.7520),
+          Activity(
+            time: '09:00 AM',
+            title: 'Arrive in Goa',
+            description: 'Arrive at Madgaon Station, take cab to hotel.',
+            cost: 1200,
+            category: 'transport',
+            lat: 15.2736,
+            lng: 73.9582,
+          ),
+          Activity(
+            time: '12:00 PM',
+            title: 'Check-in at Hotel',
+            description: 'Check-in at Beach Resort Goa (Deluxe Room).',
+            cost: 0,
+            category: 'stay',
+            lat: 15.5494,
+            lng: 73.7535,
+          ),
+          Activity(
+            time: '04:00 PM',
+            title: 'Calangute Beach',
+            description: 'Relax at the beach side and enjoy sunset.',
+            cost: 500,
+            category: 'activities',
+            lat: 15.5442,
+            lng: 73.7550,
+          ),
+          Activity(
+            time: '08:00 PM',
+            title: 'Dinner at Beach Shack',
+            description: 'Have local Goan curry at the shack.',
+            cost: 1200,
+            category: 'food',
+            lat: 15.5550,
+            lng: 73.7520,
+          ),
         ],
         'Day 2': [
-          Activity(time: '10:00 AM', title: 'Scuba Diving at Grand Island', description: 'Undersea exploration and underwater photoshoot.', cost: 2500, category: 'activities', lat: 15.4294, lng: 73.7742),
-          Activity(time: '02:00 PM', title: 'Lunch at German Bakery', description: 'Enjoy fresh continental dishes.', cost: 800, category: 'food', lat: 15.5994, lng: 73.7480),
-          Activity(time: '06:00 PM', title: 'Fort Aguada', description: 'Explore Portuguese lighthouse and historical fort.', cost: 100, category: 'activities', lat: 15.4926, lng: 73.7736),
-        ]
+          Activity(
+            time: '10:00 AM',
+            title: 'Scuba Diving at Grand Island',
+            description: 'Undersea exploration and underwater photoshoot.',
+            cost: 2500,
+            category: 'activities',
+            lat: 15.4294,
+            lng: 73.7742,
+          ),
+          Activity(
+            time: '02:00 PM',
+            title: 'Lunch at German Bakery',
+            description: 'Enjoy fresh continental dishes.',
+            cost: 800,
+            category: 'food',
+            lat: 15.5994,
+            lng: 73.7480,
+          ),
+          Activity(
+            time: '06:00 PM',
+            title: 'Fort Aguada',
+            description: 'Explore Portuguese lighthouse and historical fort.',
+            cost: 100,
+            category: 'activities',
+            lat: 15.4926,
+            lng: 73.7736,
+          ),
+        ],
       },
     ),
   ];
@@ -52,10 +192,34 @@ class ApiService {
   late final List<Booking> _mockBookings = [];
 
   late final List<Expense> _mockExpenses = [
-    Expense(id: 'e1', title: 'Beach Resort Goa (Stay)', amount: 9000, category: 'stay', date: DateTime(2026, 5, 20)),
-    Expense(id: 'e2', title: 'Konkan Express Tickets', amount: 7500, category: 'transport', date: DateTime(2026, 5, 20)),
-    Expense(id: 'e3', title: 'Dinner at Beach Shack', amount: 3000, category: 'food', date: DateTime(2026, 5, 21)),
-    Expense(id: 'e4', title: 'Scuba Diving Activity', amount: 1750, category: 'activities', date: DateTime(2026, 5, 21)),
+    Expense(
+      id: 'e1',
+      title: 'Beach Resort Goa (Stay)',
+      amount: 9000,
+      category: 'stay',
+      date: DateTime(2026, 5, 20),
+    ),
+    Expense(
+      id: 'e2',
+      title: 'Konkan Express Tickets',
+      amount: 7500,
+      category: 'transport',
+      date: DateTime(2026, 5, 20),
+    ),
+    Expense(
+      id: 'e3',
+      title: 'Dinner at Beach Shack',
+      amount: 3000,
+      category: 'food',
+      date: DateTime(2026, 5, 21),
+    ),
+    Expense(
+      id: 'e4',
+      title: 'Scuba Diving Activity',
+      amount: 1750,
+      category: 'activities',
+      date: DateTime(2026, 5, 21),
+    ),
   ];
 
   User? get currentUser => _currentUser;
@@ -72,16 +236,25 @@ class ApiService {
   Future<bool> login(String email, String password) async {
     if (_useMock) {
       _token = 'mock_jwt_token';
-      _currentUser = User(id: 'u1', name: 'John Doe', email: email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', phone: '+91 98765 43210');
+      _currentUser = User(
+        id: 'u1',
+        name: 'John Doe',
+        email: email,
+        avatar:
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
+        phone: '+91 98765 43210',
+      );
       return true;
     }
 
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .post(
+            Uri.parse('$baseUrl/auth/login'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email, 'password': password}),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
@@ -99,16 +272,29 @@ class ApiService {
   Future<bool> signup(String name, String email, String password) async {
     if (_useMock) {
       _token = 'mock_jwt_token';
-      _currentUser = User(id: 'u1', name: name, email: email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', phone: '');
+      _currentUser = User(
+        id: 'u1',
+        name: name,
+        email: email,
+        avatar:
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
+        phone: '',
+      );
       return true;
     }
 
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/signup'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'name': name, 'email': email, 'password': password}),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .post(
+            Uri.parse('$baseUrl/auth/signup'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'name': name,
+              'email': email,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 210 || res.statusCode == 201) {
         final data = jsonDecode(res.body);
@@ -132,11 +318,14 @@ class ApiService {
   Future<List<Destination>> getDestinations({String search = ''}) async {
     if (_useMock) {
       if (search.isEmpty) return _mockDestinations;
-      return _mockDestinations.where((d) => d.name.toLowerCase().contains(search.toLowerCase())).toList();
+      return _mockDestinations
+          .where((d) => d.name.toLowerCase().contains(search.toLowerCase()))
+          .toList();
     }
 
     try {
-      final res = await http.get(Uri.parse('$baseUrl/destinations?search=$search'))
+      final res = await http
+          .get(Uri.parse('$baseUrl/destinations?search=$search'))
           .timeout(const Duration(seconds: 3));
       if (res.statusCode == 200) {
         final List list = jsonDecode(res.body);
@@ -153,7 +342,8 @@ class ApiService {
     if (_useMock) return _mockTrips;
 
     try {
-      final res = await http.get(Uri.parse('$baseUrl/trips'), headers: _getHeaders())
+      final res = await http
+          .get(Uri.parse('$baseUrl/trips'), headers: _getHeaders())
           .timeout(const Duration(seconds: 3));
       if (res.statusCode == 200) {
         final List list = jsonDecode(res.body);
@@ -165,7 +355,13 @@ class ApiService {
     }
   }
 
-  Future<Trip?> createTrip(String destination, DateTime start, DateTime end, int travelers, double budget) async {
+  Future<Trip?> createTrip(
+    String destination,
+    DateTime start,
+    DateTime end,
+    int travelers,
+    double budget,
+  ) async {
     final bodyData = {
       'destination': destination,
       'startDate': start.toIso8601String(),
@@ -175,8 +371,10 @@ class ApiService {
     };
 
     if (_useMock) {
-      final optCost = (destination.toLowerCase() == 'goa' && budget == 25000) ? 20099.0 : budget * 0.8;
-      
+      final optCost = (destination.toLowerCase() == 'goa' && budget == 25000)
+          ? 20099.0
+          : budget * 0.8;
+
       final destMock = _mockDestinations.firstWhere(
         (d) => d.name.toLowerCase() == destination.toLowerCase(),
         orElse: () => _mockDestinations[0],
@@ -198,8 +396,16 @@ class ApiService {
         status: 'upcoming',
         itinerary: {
           'Day 1': [
-            Activity(time: '09:00 AM', title: 'Arrive in $destination', description: 'Settle in and review details.', cost: 0, category: 'stay', lat: latVal, lng: lngVal),
-          ]
+            Activity(
+              time: '09:00 AM',
+              title: 'Arrive in $destination',
+              description: 'Settle in and review details.',
+              cost: 0,
+              category: 'stay',
+              lat: latVal,
+              lng: lngVal,
+            ),
+          ],
         },
       );
       _mockTrips.add(mockTrip);
@@ -207,11 +413,13 @@ class ApiService {
     }
 
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/trips'),
-        headers: _getHeaders(),
-        body: jsonEncode(bodyData),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .post(
+            Uri.parse('$baseUrl/trips'),
+            headers: _getHeaders(),
+            body: jsonEncode(bodyData),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 201) {
         final data = jsonDecode(res.body);
@@ -229,7 +437,8 @@ class ApiService {
     if (_useMock) return _mockBookings;
 
     try {
-      final res = await http.get(Uri.parse('$baseUrl/bookings'), headers: _getHeaders())
+      final res = await http
+          .get(Uri.parse('$baseUrl/bookings'), headers: _getHeaders())
           .timeout(const Duration(seconds: 3));
       if (res.statusCode == 200) {
         final List list = jsonDecode(res.body);
@@ -241,7 +450,13 @@ class ApiService {
     }
   }
 
-  Future<Booking?> createBooking(String tripId, String type, String name, String details, double cost) async {
+  Future<Booking?> createBooking(
+    String tripId,
+    String type,
+    String name,
+    String details,
+    double cost,
+  ) async {
     final bodyData = {
       'tripId': tripId,
       'type': type,
@@ -266,11 +481,13 @@ class ApiService {
     }
 
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/bookings'),
-        headers: _getHeaders(),
-        body: jsonEncode(bodyData),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .post(
+            Uri.parse('$baseUrl/bookings'),
+            headers: _getHeaders(),
+            body: jsonEncode(bodyData),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 201) {
         final data = jsonDecode(res.body);
@@ -288,7 +505,11 @@ class ApiService {
     if (_useMock) return _mockExpenses;
 
     try {
-      final res = await http.get(Uri.parse('$baseUrl/expenses/trip/$tripId'), headers: _getHeaders())
+      final res = await http
+          .get(
+            Uri.parse('$baseUrl/expenses/trip/$tripId'),
+            headers: _getHeaders(),
+          )
           .timeout(const Duration(seconds: 3));
       if (res.statusCode == 200) {
         final List list = jsonDecode(res.body);
@@ -300,7 +521,12 @@ class ApiService {
     }
   }
 
-  Future<Expense?> addExpense(String tripId, String title, double amount, String category) async {
+  Future<Expense?> addExpense(
+    String tripId,
+    String title,
+    double amount,
+    String category,
+  ) async {
     final expBody = {
       'tripId': tripId,
       'title': title,
@@ -321,11 +547,13 @@ class ApiService {
     }
 
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/expenses'),
-        headers: _getHeaders(),
-        body: jsonEncode(expBody),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .post(
+            Uri.parse('$baseUrl/expenses'),
+            headers: _getHeaders(),
+            body: jsonEncode(expBody),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 201) {
         return Expense.fromJson(jsonDecode(res.body));
@@ -362,11 +590,13 @@ class ApiService {
     }
 
     try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/trips/$tripId/status'),
-        headers: _getHeaders(),
-        body: jsonEncode({'status': status}),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .put(
+            Uri.parse('$baseUrl/trips/$tripId/status'),
+            headers: _getHeaders(),
+            body: jsonEncode({'status': status}),
+          )
+          .timeout(const Duration(seconds: 4));
 
       return res.statusCode == 200;
     } catch (e) {
@@ -391,15 +621,13 @@ class ApiService {
     }
 
     try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/auth/user'),
-        headers: _getHeaders(),
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'phone': phone,
-        }),
-      ).timeout(const Duration(seconds: 4));
+      final res = await http
+          .put(
+            Uri.parse('$baseUrl/auth/user'),
+            headers: _getHeaders(),
+            body: jsonEncode({'name': name, 'email': email, 'phone': phone}),
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (res.statusCode == 200) {
         _currentUser = User.fromJson(jsonDecode(res.body));

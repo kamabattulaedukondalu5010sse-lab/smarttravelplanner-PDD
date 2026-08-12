@@ -19,8 +19,8 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
   final _toController = TextEditingController(text: 'Goa');
   final _travelersController = TextEditingController(text: '2');
   final _budgetController = TextEditingController(text: '25000');
-  DateTime _startDate = DateTime(2026, 5, 20);
-  DateTime _endDate = DateTime(2026, 5, 25);
+  DateTime _startDate = DateTime.now().add(const Duration(days: 7));
+  DateTime _endDate = DateTime.now().add(const Duration(days: 12));
   bool _isLoading = false;
 
   @override
@@ -49,15 +49,19 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
     final travelers = int.parse(travelersStr);
     final budget = double.parse(budgetStr);
 
-    final trip = await api.createTrip(destination, _startDate, _endDate, travelers, budget);
+    final trip = await api.createTrip(
+      destination,
+      _startDate,
+      _endDate,
+      travelers,
+      budget,
+    );
 
     setState(() => _isLoading = false);
 
     if (trip != null && mounted) {
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => BudgetPlannerScreen(trip: trip),
-        ),
+        MaterialPageRoute(builder: (_) => BudgetPlannerScreen(trip: trip)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,11 +81,18 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           children: [
             const Text(
               'Trip Planner',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textPrimary,
+              ),
             ),
-            const Text('Enter travel details to start budget-optimization.', style: TextStyle(color: AppTheme.textSecondary)),
+            const Text(
+              'Enter travel details to start budget-optimization.',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
             const SizedBox(height: 24),
-            
+
             TextField(
               controller: _fromController,
               decoration: const InputDecoration(
@@ -98,7 +109,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Date Picker Row
             Row(
               children: [
@@ -115,7 +126,9 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                     },
                     child: InputDecorator(
                       decoration: const InputDecoration(labelText: 'Departure'),
-                      child: Text('${_startDate.day}/${_startDate.month}/${_startDate.year}'),
+                      child: Text(
+                        '${_startDate.day}/${_startDate.month}/${_startDate.year}',
+                      ),
                     ),
                   ),
                 ),
@@ -133,14 +146,16 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                     },
                     child: InputDecorator(
                       decoration: const InputDecoration(labelText: 'Return'),
-                      child: Text('${_endDate.day}/${_endDate.month}/${_endDate.year}'),
+                      child: Text(
+                        '${_endDate.day}/${_endDate.month}/${_endDate.year}',
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             TextField(
               controller: _travelersController,
               keyboardType: TextInputType.number,
@@ -159,13 +174,13 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            
+
             SizedBox(
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _handleOptimize,
-                child: _isLoading 
+                child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text('Optimize Budget'),
               ),
@@ -204,10 +219,17 @@ class BudgetPlannerScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Total Budget', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                  const Text(
+                    'Total Budget',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
                   Text(
                     '₹${trip.budget.toStringAsFixed(0)}',
-                    style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -216,15 +238,42 @@ class BudgetPlannerScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Optimized Cost', style: TextStyle(color: Colors.white70, fontSize: 11)),
-                          Text('₹${trip.optimizedCost.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                          const Text(
+                            'Optimized Cost',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 11,
+                            ),
+                          ),
+                          Text(
+                            '₹${trip.optimizedCost.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text('Smart Savings', style: TextStyle(color: AppTheme.success, fontSize: 11, fontWeight: FontWeight.bold)),
-                          Text('₹${savings.toStringAsFixed(0)}', style: const TextStyle(color: AppTheme.success, fontWeight: FontWeight.bold, fontSize: 16)),
+                          const Text(
+                            'Smart Savings',
+                            style: TextStyle(
+                              color: AppTheme.success,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '₹${savings.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              color: AppTheme.success,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -234,7 +283,10 @@ class BudgetPlannerScreen extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
-            const Text('Cost Distribution', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Cost Distribution',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
 
             // fl_chart Donut
@@ -249,11 +301,61 @@ class BudgetPlannerScreen extends StatelessWidget {
                         sectionsSpace: 3,
                         centerSpaceRadius: 40,
                         sections: [
-                          PieChartSectionData(color: AppTheme.primary, value: 40, title: '40%', radius: 25, titleStyle: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                          PieChartSectionData(color: AppTheme.success, value: 30, title: '30%', radius: 25, titleStyle: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                          PieChartSectionData(color: AppTheme.warning, value: 15, title: '15%', radius: 25, titleStyle: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                          PieChartSectionData(color: Colors.pinkAccent, value: 10, title: '10%', radius: 25, titleStyle: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                          PieChartSectionData(color: Colors.blueGrey, value: 5, title: '5%', radius: 25, titleStyle: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                          PieChartSectionData(
+                            color: AppTheme.primary,
+                            value: 40,
+                            title: '40%',
+                            radius: 25,
+                            titleStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          PieChartSectionData(
+                            color: AppTheme.success,
+                            value: 30,
+                            title: '30%',
+                            radius: 25,
+                            titleStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          PieChartSectionData(
+                            color: AppTheme.warning,
+                            value: 15,
+                            title: '15%',
+                            radius: 25,
+                            titleStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          PieChartSectionData(
+                            color: Colors.pinkAccent,
+                            value: 10,
+                            title: '10%',
+                            radius: 25,
+                            titleStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          PieChartSectionData(
+                            color: Colors.blueGrey,
+                            value: 5,
+                            title: '5%',
+                            radius: 25,
+                            titleStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -265,14 +367,29 @@ class BudgetPlannerScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _LegendItem(color: AppTheme.primary, text: 'Transport (40%)'),
-                        _LegendItem(color: AppTheme.success, text: 'Stay (30%)'),
-                        _LegendItem(color: AppTheme.warning, text: 'Food (15%)'),
-                        _LegendItem(color: Colors.pinkAccent, text: 'Activities (10%)'),
-                        _LegendItem(color: Colors.blueGrey, text: 'Others (5%)'),
+                        _LegendItem(
+                          color: AppTheme.primary,
+                          text: 'Transport (40%)',
+                        ),
+                        _LegendItem(
+                          color: AppTheme.success,
+                          text: 'Stay (30%)',
+                        ),
+                        _LegendItem(
+                          color: AppTheme.warning,
+                          text: 'Food (15%)',
+                        ),
+                        _LegendItem(
+                          color: Colors.pinkAccent,
+                          text: 'Activities (10%)',
+                        ),
+                        _LegendItem(
+                          color: Colors.blueGrey,
+                          text: 'Others (5%)',
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -293,7 +410,10 @@ class BudgetPlannerScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Book early to save 15% more on train routes and flights.',
-                      style: TextStyle(color: AppTheme.textPrimary, fontSize: 13),
+                      style: TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],
@@ -333,7 +453,10 @@ class _LegendItem extends StatelessWidget {
       children: [
         Container(width: 10, height: 10, color: color),
         const SizedBox(width: 8),
-        Text(text, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+        ),
       ],
     );
   }
@@ -364,22 +487,39 @@ class AIRecommendationsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('AI Recommendation', style: TextStyle(color: AppTheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'AI Recommendation',
+                    style: TextStyle(
+                      color: AppTheme.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   const Text(
                     'Best Time to Visit Goa is May',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   Text(
                     'Perfect weather, sunny skies, and lower booking costs.',
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
 
-            const Text('Recommended For You', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Recommended For You',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
 
             _recommendCard(
@@ -427,7 +567,13 @@ class AIRecommendationsScreen extends StatelessWidget {
     );
   }
 
-  Widget _recommendCard(String name, String price, String img, String desc, double rate) {
+  Widget _recommendCard(
+    String name,
+    String price,
+    String img,
+    String desc,
+    double rate,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -435,7 +581,12 @@ class AIRecommendationsScreen extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(img, width: 80, height: 80, fit: BoxFit.cover),
+              child: Image.network(
+                img,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -445,18 +596,46 @@ class AIRecommendationsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15), overflow: TextOverflow.ellipsis)),
-                      Text(price, style: const TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        price,
+                        style: const TextStyle(
+                          color: AppTheme.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(desc, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                  Text(
+                    desc,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   Row(
                     children: [
                       const Icon(Icons.star, color: AppTheme.warning, size: 14),
                       const SizedBox(width: 4),
-                      Text('$rate', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      Text(
+                        '$rate',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -482,8 +661,14 @@ class RouteOptimizationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Best Route Found', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
-            const Text('Mumbai ➔ Goa routes comparison', style: TextStyle(color: AppTheme.textSecondary)),
+            const Text(
+              'Best Route Found',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+            const Text(
+              'Mumbai ➔ Goa routes comparison',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
             const SizedBox(height: 20),
 
             _routeOptionCard(
@@ -515,7 +700,13 @@ class RouteOptimizationScreen extends StatelessWidget {
     );
   }
 
-  Widget _routeOptionCard(String mode, String details, String description, bool recommended, BuildContext context) {
+  Widget _routeOptionCard(
+    String mode,
+    String details,
+    String description,
+    bool recommended,
+    BuildContext context,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -525,19 +716,51 @@ class RouteOptimizationScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(mode, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                  mode,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
                 if (recommended)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: AppTheme.success.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
-                    child: const Text('Recommended', style: TextStyle(color: AppTheme.success, fontSize: 10, fontWeight: FontWeight.bold)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.success.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Recommended',
+                      style: TextStyle(
+                        color: AppTheme.success,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(details, style: const TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(
+              details,
+              style: const TextStyle(
+                color: AppTheme.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text(description, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+            Text(
+              description,
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 13,
+              ),
+            ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
@@ -550,7 +773,10 @@ class RouteOptimizationScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Select Option', style: TextStyle(fontSize: 14)),
+                child: const Text(
+                  'Select Option',
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
             ),
           ],

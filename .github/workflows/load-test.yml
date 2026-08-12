@@ -1,0 +1,38 @@
+name: Grafana k6 Load Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  k6_load_test:
+    name: Run k6 Load Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: 3. Execute k6 Load Test Suite & Validate Thresholds
+        env:
+          BASE_URL: "https://test-api.k6.io"
+        run: |
+          mkdir -p load-test-reports
+          k6 run --out json=load-test-reports/results.json load-tests/main.js
+
+      - name: 4. Upload Load Test Reports Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-load-test-reports
+          path: load-test-reports/

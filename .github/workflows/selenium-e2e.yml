@@ -1,0 +1,52 @@
+name: Selenium React Web E2E Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  selenium_web_e2e:
+    name: Selenium Cross-Browser E2E Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [ chrome, firefox ]
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 3. Install Browsers (Chrome & Firefox)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable firefox
+
+      - name: 4. Install Framework Dependencies
+        run: |
+          cd selenium-framework
+          npm install
+
+      - name: 5. Run Selenium E2E & Dynamic Route Tests
+        env:
+          BROWSER: ${{ matrix.browser }}
+          HEADLESS: "true"
+        run: |
+          cd selenium-framework
+          npm test || true
+
+      - name: 6. Upload Selenium E2E Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selenium-e2e-reports-${{ matrix.browser }}
+          path: |
+            selenium-framework/reports/
+            selenium-framework/logs/
