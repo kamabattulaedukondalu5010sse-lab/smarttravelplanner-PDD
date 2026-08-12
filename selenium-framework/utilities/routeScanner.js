@@ -8,7 +8,7 @@ class ReactRouteScanner {
   }
 
   /**
-   * Scans React source files for routes and form validation rules
+   * Scans React source files for routes, activeTab states, and form validation rules
    */
   scanReactRoutes() {
     logger.info(`[Route Scanner] Scanning React source files under: ${this.frontendPath}...`);
@@ -24,17 +24,29 @@ class ReactRouteScanner {
       files.forEach(filePath => {
         const content = fs.readFileSync(filePath, 'utf8');
 
-        // Regex pattern to extract React Router paths: <Route path="/login" element={<LoginPage />} />
+        // 1. Check for React Router paths: <Route path="/login" element={<LoginPage />} />
         const routeMatches = content.matchAll(/<Route\s+path=["']([^"']+)["']\s+element=\{<([^/>]+)\s*\/?>\}/g);
         for (const match of routeMatches) {
-          const pathName = match[1];
-          const componentName = match[2];
           routes.push({
-            path: pathName,
-            component: componentName,
+            path: match[1],
+            component: match[2],
             filePath,
-            forms: this.extractFormRulesFromComponent(filePath, componentName)
+            forms: this.extractFormRulesFromContent(content, match[2])
           });
+        }
+
+        // 2. Check for Manual State Tabs in App.jsx (e.g. currentTab === 'planner', 'bookings', 'expenses', 'profile', 'settings')
+        const tabMatches = content.matchAll(/currentTab\s*===\s*['"]([^'"]+)['"]/g);
+        for (const match of tabMatches) {
+          const tabName = match[1];
+          if (!routes.some(r => r.path === `/${tabName}`)) {
+            routes.push({
+              path: `/${tabName}`,
+              component: `${tabName.charAt(0).toUpperCase() + tabName.slice(1)}View`,
+              filePath,
+              forms: this.extractFormRulesFromContent(content, tabName)
+            });
+          }
         }
       });
     } catch (err) {
@@ -45,7 +57,7 @@ class ReactRouteScanner {
       return this.getFallbackRouteSpecs();
     }
 
-    logger.info(`[Route Scanner] Successfully discovered ${routes.length} React routes with dynamic form rules.`);
+    logger.info(`[Route Scanner] Successfully discovered ${routes.length} React routes/tab views with form rules.`);
     return routes;
   }
 
@@ -62,13 +74,8 @@ class ReactRouteScanner {
     return arrayOfFiles;
   }
 
-  extractFormRulesFromComponent(filePath, componentName) {
+  extractFormRulesFromContent(content, contextName) {
     const forms = [];
-    if (!fs.existsSync(filePath)) return forms;
-
-    const content = fs.readFileSync(filePath, 'utf8');
-    
-    // Look for form input elements and HTML5/React validation attributes
     const inputMatches = content.matchAll(/<input\s+([^>]+)>/g);
     const rules = [];
 
@@ -92,7 +99,7 @@ class ReactRouteScanner {
     }
 
     if (rules.length > 0) {
-      forms.push({ formName: `${componentName}Form`, fields: rules });
+      forms.push({ formName: `${contextName}Form`, fields: rules });
     }
 
     return forms;
@@ -114,21 +121,6 @@ class ReactRouteScanner {
         ]
       },
       {
-        path: '/register',
-        component: 'RegisterForm',
-        forms: [
-          {
-            formName: 'UserRegistrationForm',
-            fields: [
-              { fieldName: 'fullName', fieldType: 'text', required: true },
-              { fieldName: 'email', fieldType: 'email', required: true },
-              { fieldName: 'phone', fieldType: 'tel', required: true, minLength: 10 },
-              { fieldName: 'password', fieldType: 'password', required: true, minLength: 8 }
-            ]
-          }
-        ]
-      },
-      {
         path: '/planner',
         component: 'TravelPlannerForm',
         forms: [
@@ -138,6 +130,19 @@ class ReactRouteScanner {
               { fieldName: 'destination', fieldType: 'text', required: true },
               { fieldName: 'startDate', fieldType: 'date', required: true },
               { fieldName: 'budget', fieldType: 'number', required: false }
+            ]
+          }
+        ]
+      },
+      {
+        path: '/expenses',
+        component: 'ExpenseForm',
+        forms: [
+          {
+            formName: 'AddExpenseForm',
+            fields: [
+              { fieldName: 'title', fieldType: 'text', required: true },
+              { fieldName: 'amount', fieldType: 'number', required: true }
             ]
           }
         ]
