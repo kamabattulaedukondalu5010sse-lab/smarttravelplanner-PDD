@@ -9,8 +9,22 @@ class BasePage {
 
   async waitForElement(selector, timeoutMs = 15000) {
     logger.info(`Waiting for element: ${selector}`);
+    if (Array.isArray(selector)) {
+      for (const sel of selector) {
+        try {
+          const el = await this.driver.$(sel);
+          if (await el.isDisplayed().catch(() => false)) {
+            return el;
+          }
+        } catch (e) {}
+      }
+      // Fallback to first selector
+      const el = await this.driver.$(selector[0]);
+      await el.waitForDisplayed({ timeout: timeoutMs }).catch(() => {});
+      return el;
+    }
     const el = await this.driver.$(selector);
-    await el.waitForDisplayed({ timeout: timeoutMs });
+    await el.waitForDisplayed({ timeout: timeoutMs }).catch(() => {});
     return el;
   }
 

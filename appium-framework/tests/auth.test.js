@@ -68,8 +68,9 @@ describe('React Native Android - Authentication E2E Tests', function () {
   it('TC-AUTH-05: Validate session persistence after app restart', async function () {
     excelReporter.addLog('TC-AUTH-05', 'App Restart Session Check', 'IN_PROGRESS', 'Terminating and relaunching app');
     await loginPage.login('admin@company.com', 'SuperSecret123!');
-    await driver.terminateApp('com.company.app');
-    await driver.activateApp('com.company.app');
+    const appPkg = process.env.APP_PACKAGE || 'com.smarttravelplanner.mobile';
+    await driver.terminateApp(appPkg);
+    await driver.activateApp(appPkg);
     const isLoggedIn = await loginPage.isLoggedIn();
     expect(isLoggedIn).to.be.true;
   });

@@ -2,12 +2,12 @@ const BasePage = require('./BasePage');
 
 class LoginPage extends BasePage {
   // React Native Locators (Accessibility ID / ValueKey / UIAutomator)
-  get usernameInput() { return '~username_field'; } // Accessibility ID / Semantics Label
-  get passwordInput() { return '~password_field'; }
-  get loginButton() { return '~login_button'; }
-  get logoutButton() { return '~logout_button'; }
-  get errorMessage() { return '~error_message'; }
-  get welcomeBanner() { return '~welcome_text'; }
+  get usernameInput() { return ['~username_field', '//android.widget.EditText[1]', '//*[@text="Email Address"]']; }
+  get passwordInput() { return ['~password_field', '//android.widget.EditText[2]', '//*[@text="Password"]']; }
+  get loginButton() { return ['~login_button', '//*[@text="Login"]', '//*[@text="Log In"]']; }
+  get logoutButton() { return ['~logout_button', '//*[@text="Logout"]', '//*[@text="Log Out"]']; }
+  get errorMessage() { return ['~error_message', '//*[contains(@text, "Invalid credentials")]', '//*[contains(@text, "Please enter all fields")]', '//*[contains(@text, "required")]']; }
+  get welcomeBanner() { return ['~welcome_text', '//*[@text="Welcome Back!"]', '//*[contains(@text, "Smart Travel")]']; }
 
   async login(username, password) {
     if (username !== undefined && username !== null) {

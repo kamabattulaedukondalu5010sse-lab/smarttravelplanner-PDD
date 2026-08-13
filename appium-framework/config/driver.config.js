@@ -2,8 +2,8 @@ const path = require('path');
 const logger = require('../utilities/logger');
 
 const APK_PATH = process.env.APK_PATH || path.join(__dirname, '../app/app-release.apk');
-const APP_PACKAGE = process.env.APP_PACKAGE || 'com.company.app';
-const APP_ACTIVITY = process.env.APP_ACTIVITY || 'com.company.app.MainActivity';
+const APP_PACKAGE = process.env.APP_PACKAGE || 'com.smarttravelplanner.mobile';
+const APP_ACTIVITY = process.env.APP_ACTIVITY || 'com.smarttravelplanner.mobile.MainActivity';
 const APPIUM_HOST = process.env.APPIUM_HOST || '127.0.0.1';
 const APPIUM_PORT = parseInt(process.env.APPIUM_PORT || '4723', 10);
 const DEVICE_NAME = process.env.DEVICE_NAME || 'Android Emulator';

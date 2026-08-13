@@ -29,23 +29,36 @@ jobs:
       - name: 4. Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 5. Enable KVM for emulator acceleration
+      - name: 5. Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: 6. Build Flutter Android APK
+        run: |
+          cd mobile
+          flutter pub get
+          flutter build apk --debug
+          mkdir -p ../appium-framework/app
+          cp build/app/outputs/flutter-apk/app-debug.apk ../appium-framework/app/app-release.apk
+
+      - name: 7. Enable KVM for emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: 6. Install Appium 2.x Server & Drivers
+      - name: 8. Install Appium 2.x Server & Drivers
         run: |
           npm install -g appium
           appium driver install uiautomator2
 
-      - name: 7. Install Framework Dependencies
+      - name: 9. Install Framework Dependencies
         run: |
           cd appium-framework
           npm install
 
-      - name: 8. Run Appium Android Emulator & E2E Tests
+      - name: 10. Run Appium Android Emulator & E2E Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
@@ -56,6 +69,21 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
+            echo "Starting Appium 2.x server in background..."
+            appium --log appium-server.log &
+            for i in {1..30}; do
+              if nc -z 127.0.0.1 4723 2>/dev/null || curl -s http://127.0.0.1:4723/status >/dev/null 2>&1; then
+                echo "Appium server is listening on port 4723!"
+                break
+              fi
+              echo "Waiting for Appium server... ($i/30)"
+              sleep 2
+            done
+
+            export APP_PACKAGE="com.smarttravelplanner.mobile"
+            export APP_ACTIVITY="com.smarttravelplanner.mobile.MainActivity"
+            export APK_PATH="$(pwd)/appium-framework/app/app-release.apk"
+
             cd appium-framework
             npm test
 
