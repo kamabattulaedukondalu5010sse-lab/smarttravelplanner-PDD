@@ -68,11 +68,11 @@ describe('React Web Application - E2E Selenium Test Suite', function () {
   it('TC-SEL-04: Validate browser back and forward navigation', async function () {
     await loginPage.openUrl(`${BASE_URL}`);
     await loginPage.openUrl(`${BASE_URL}/#planner`);
-    await driver.navigate().back().catch(() => {});
-    const currentUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}`);
+    await driver.navigate().back();
+    const currentUrl = await driver.getCurrentUrl();
     expect(currentUrl).to.be.a('string');
-    await driver.navigate().forward().catch(() => {});
-    const forwardUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}/#planner`);
+    await driver.navigate().forward();
+    const forwardUrl = await driver.getCurrentUrl();
     expect(forwardUrl).to.be.a('string');
   });
 });

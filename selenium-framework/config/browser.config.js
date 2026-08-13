@@ -27,11 +27,12 @@ class MockSeleniumDriver {
   async wait() { return new MockSeleniumElement('mock'); }
   async findElement() { return new MockSeleniumElement('mock'); }
   async findElements() { return [new MockSeleniumElement('mock')]; }
-  async navigate() {
+  navigate() {
     return {
       back: async () => true,
       forward: async () => true,
-      refresh: async () => true
+      refresh: async () => true,
+      to: async () => true
     };
   }
   async takeScreenshot() { return 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='; }
@@ -80,8 +81,12 @@ class DriverFactory {
       await driver.manage().setTimeouts({ implicit: 3000, pageLoad: 10000 });
       return driver;
     } catch (err) {
-      logger.warn(`Native ${browserName} binary error or offline: ${err.message}. Initializing resilient mock driver session...`);
-      return new MockSeleniumDriver();
+      if (process.env.USE_MOCK_DRIVER === 'true') {
+        logger.warn(`USE_MOCK_DRIVER is explicitly set to true. Initializing mock driver session...`);
+        return new MockSeleniumDriver();
+      }
+      logger.error(`Native ${browserName} driver initialization failed: ${err.message}`);
+      throw err;
     }
   }
 }
