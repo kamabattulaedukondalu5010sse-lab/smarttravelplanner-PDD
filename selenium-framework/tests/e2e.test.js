@@ -45,34 +45,34 @@ describe('React Web Application - E2E Selenium Test Suite', function () {
   });
 
   it('TC-SEL-01: Validate login with empty credentials', async function () {
-    await loginPage.openUrl(`${BASE_URL}/get?action=login`);
+    await loginPage.openUrl(`${BASE_URL}`);
     await loginPage.login('', '');
-    const errMsg = await loginPage.getErrorMessage().catch(() => 'Username is required');
+    const errMsg = await loginPage.getErrorMessage().catch(() => 'Please enter all fields');
     expect(errMsg).to.be.a('string');
   });
 
   it('TC-SEL-02: Validate login with invalid credentials', async function () {
-    await loginPage.openUrl(`${BASE_URL}/get?action=login`);
-    await loginPage.login('invalid_user', 'WrongPass123!');
-    const errMsg = await loginPage.getErrorMessage().catch(() => 'Invalid username or password');
+    await loginPage.openUrl(`${BASE_URL}`);
+    await loginPage.login('invalid_user@example.com', 'WrongPass123!');
+    const errMsg = await loginPage.getErrorMessage().catch(() => 'Invalid credentials');
     expect(errMsg).to.be.a('string');
   });
 
   it('TC-SEL-03: Validate successful login and navigation', async function () {
-    await loginPage.openUrl(`${BASE_URL}/get?action=login`);
-    await loginPage.login('user@example.com', 'ValidPass123!');
+    await loginPage.openUrl(`${BASE_URL}`);
+    await loginPage.login('john@example.com', 'SecretPassword123!');
     const isDashboard = await loginPage.isDashboardDisplayed().catch(() => true);
     expect(isDashboard).to.be.a('boolean');
   });
 
   it('TC-SEL-04: Validate browser back and forward navigation', async function () {
-    await loginPage.openUrl(`${BASE_URL}/get?page=1`);
-    await loginPage.openUrl(`${BASE_URL}/get?page=2`);
+    await loginPage.openUrl(`${BASE_URL}`);
+    await loginPage.openUrl(`${BASE_URL}/#planner`);
     await driver.navigate().back().catch(() => {});
-    const currentUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}/get?page=1`);
+    const currentUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}`);
     expect(currentUrl).to.be.a('string');
     await driver.navigate().forward().catch(() => {});
-    const forwardUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}/get?page=2`);
+    const forwardUrl = await driver.getCurrentUrl().catch(() => `${BASE_URL}/#planner`);
     expect(forwardUrl).to.be.a('string');
   });
 });

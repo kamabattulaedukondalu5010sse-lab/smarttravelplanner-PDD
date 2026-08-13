@@ -4,12 +4,12 @@ const BasePage = require('./BasePage');
 class LoginPage extends BasePage {
   constructor(driver) {
     super(driver);
-    this.usernameInput = By.css('#username, input[name="username"]');
-    this.passwordInput = By.css('#password, input[name="password"]');
+    this.usernameInput = By.css('input[type="email"], input[name="email"], #username, input[name="username"]');
+    this.passwordInput = By.css('input[type="password"], input[name="password"], #password');
     this.loginButton = By.css('button[type="submit"], #login-btn');
-    this.logoutButton = By.css('#logout-btn, .logout-button');
-    this.errorMessageAlert = By.css('.error-message, .alert-danger');
-    this.dashboardHeader = By.css('h1.dashboard-title, .welcome-banner');
+    this.logoutButton = By.css('#logout-btn, .logout-button, button:contains("Logout")');
+    this.errorMessageAlert = By.css('.error-message, .alert-danger, form + div, div[style*="FEE2E2"]');
+    this.dashboardHeader = By.css('h1, h2, .welcome-banner, .dashboard-title');
   }
 
   async login(username, password) {

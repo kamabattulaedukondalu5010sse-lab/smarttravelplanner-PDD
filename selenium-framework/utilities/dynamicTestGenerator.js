@@ -13,7 +13,7 @@ class DynamicTestGenerator {
 
     for (const route of routeSpecs) {
       const cleanPath = route.path.startsWith('/') ? route.path.substring(1) : route.path;
-      const fullUrl = `${baseUrl}/get?route=${cleanPath}`;
+      const fullUrl = cleanPath ? `${baseUrl}/#${cleanPath}` : `${baseUrl}`;
       logger.info(`[Dynamic Test Generator] Testing route: ${fullUrl}`);
 
       try {

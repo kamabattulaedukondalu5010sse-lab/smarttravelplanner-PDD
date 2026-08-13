@@ -6,7 +6,7 @@ const logger = require('../utilities/logger');
 
 const BROWSER = (process.env.BROWSER || 'chrome').toLowerCase();
 const HEADLESS = process.env.HEADLESS !== 'false';
-const BASE_URL = process.env.BASE_URL || 'https://httpbin.org';
+const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:3000';
 
 class MockSeleniumElement {
   constructor(locator) {
