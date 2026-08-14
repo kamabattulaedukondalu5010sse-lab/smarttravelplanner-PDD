@@ -15,6 +15,12 @@ jobs:
       matrix:
         browser: [ chrome, firefox ]
 
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
     steps:
       - name: 1. Checkout Repository
         uses: actions/checkout@v4
@@ -33,6 +39,9 @@ jobs:
         uses: browser-actions/setup-firefox@v1
 
       - name: 4. Install Framework Dependencies & Start Web Application
+        env:
+          MONGO_URI: ${{ secrets.MONGO_TEST_URI || 'mongodb://127.0.0.1:27017/smart-travel-planner-test' }}
+          MONGO_DB_NAME: 'smart-travel-planner-test'
         run: |
           cd backend
           npm install
@@ -78,3 +87,16 @@ jobs:
           path: |
             selenium-framework/reports/
             selenium-framework/logs/
+
+      - name: 7. Teardown & Clean Test Database
+        if: always()
+        env:
+          MONGO_URI: ${{ secrets.MONGO_TEST_URI || 'mongodb://127.0.0.1:27017/smart-travel-planner-test' }}
+          MONGO_DB_NAME: 'smart-travel-planner-test'
+        run: |
+          node -e "
+            const mongoose = require('mongoose');
+            const uri = process.env.MONGO_URI;
+            const dbName = process.env.MONGO_DB_NAME;
+            mongoose.connect(uri, { dbName }).then(() => mongoose.connection.db.dropDatabase()).then(() => console.log('Test database dropped successfully')).catch(err => console.log('Teardown notice:', err.message)).finally(() => process.exit(0));
+          "
