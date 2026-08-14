@@ -11,12 +11,6 @@ jobs:
     name: Run k6 Load Tests
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports:
-          - 27017:27017
-
     steps:
       - name: 1. Checkout Repository
         uses: actions/checkout@v4
@@ -27,21 +21,20 @@ jobs:
           node-version: '20'
 
       - name: 3. Start Backend Express API Service
-        env:
-          MONGO_URI: ${{ secrets.MONGO_TEST_URI || 'mongodb://127.0.0.1:27017/smart-travel-planner-test' }}
-          MONGO_DB_NAME: 'smart-travel-planner-test'
         run: |
           cd backend
           npm install
           npm start &
           echo "Waiting for backend service to become healthy..."
-          for i in {1..30}; do
+          i=1
+          while [ "$i" -le 30 ]; do
             if curl -s http://127.0.0.1:5000/ > /dev/null; then
               echo "Backend service is up and running!"
               break
             fi
             echo "Waiting for backend on port 5000... ($i/30)"
             sleep 1
+            i=$((i+1))
           done
 
       - name: 4. Install k6
@@ -67,16 +60,3 @@ jobs:
         with:
           name: k6-load-test-reports
           path: load-test-reports/
-
-      - name: 7. Teardown & Clean Test Database
-        if: always()
-        env:
-          MONGO_URI: ${{ secrets.MONGO_TEST_URI || 'mongodb://127.0.0.1:27017/smart-travel-planner-test' }}
-          MONGO_DB_NAME: 'smart-travel-planner-test'
-        run: |
-          node -e "
-            const mongoose = require('mongoose');
-            const uri = process.env.MONGO_URI;
-            const dbName = process.env.MONGO_DB_NAME;
-            mongoose.connect(uri, { dbName }).then(() => mongoose.connection.db.dropDatabase()).then(() => console.log('Test database dropped successfully')).catch(err => console.log('Teardown notice:', err.message)).finally(() => process.exit(0));
-          "
