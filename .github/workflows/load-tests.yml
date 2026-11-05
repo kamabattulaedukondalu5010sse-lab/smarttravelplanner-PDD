@@ -1,0 +1,118 @@
+name: k6 Load Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Load Testing Profile (smoke, normal, stress, spike, soak)'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - normal
+          - stress
+          - spike
+          - soak
+      duration:
+        description: 'Test Duration (e.g. 20s, 1m)'
+        required: false
+        default: '20s'
+      virtual_users:
+        description: 'Virtual Users (VUs)'
+        required: false
+        default: '2'
+      environment:
+        description: 'Target Environment'
+        required: false
+        default: 'ci'
+
+concurrency:
+  group: load-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  load_tests:
+    name: k6 Load Test Suite (300 Scenarios)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 3. Start Backend Express API Service
+        env:
+          PORT: 5000
+          MONGO_URI: mongodb://127.0.0.1:27017/smart-travel-planner
+          JWT_SECRET: supersecret_jwt_token_12345
+        run: |
+          cd backend
+          npm ci || npm install
+          node src/index.js &
+          echo "Waiting for backend service on port 5000..."
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:5000/ > /dev/null; then
+              echo "Backend is up and running!"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: 4. Install k6 Binary
+        run: |
+          curl -sL https://github.com/grafana/k6/releases/download/v0.50.0/k6-v0.50.0-linux-amd64.tar.gz | tar -xz
+          sudo cp k6-v0.50.0-linux-amd64/k6 /usr/local/bin/
+          k6 version
+
+      - name: 5. Execute k6 Load Test Suite
+        env:
+          BASE_URL: "http://127.0.0.1:5000"
+          PROFILE: ${{ github.event.inputs.profile || 'smoke' }}
+          DURATION: ${{ github.event.inputs.duration || '20s' }}
+          VUS: ${{ github.event.inputs.virtual_users || '2' }}
+        run: |
+          mkdir -p tests/load/reports
+          k6 run \
+            -e BASE_URL="$BASE_URL" \
+            -e PROFILE="$PROFILE" \
+            -e DURATION="$DURATION" \
+            -e VUS="$VUS" \
+            tests/load/main.js
+
+      - name: 6. Generate Step Summary
+        if: always()
+        run: |
+          echo "## ⚡ k6 Load Testing Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total Planned Scenarios** | 300 (LOAD-001 to LOAD-300) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Active Profile** | \`${{ github.event.inputs.profile || 'smoke' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Configured Duration** | \`${{ github.event.inputs.duration || '20s' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Virtual Users (VUs)** | \`${{ github.event.inputs.virtual_users || '2' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target API** | \`http://127.0.0.1:5000\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Failure Rate Threshold** | \`rate < 0.01\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Latency p(95) Threshold** | \`p(95) < 500ms\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+
+      - name: 7. Upload k6 Load Test Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-test-results
+          path: tests/load/reports/

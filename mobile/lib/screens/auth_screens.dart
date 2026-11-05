@@ -10,23 +10,27 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+
     _controller.forward();
 
-    // Navigate to Login after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/login');
@@ -60,7 +64,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Decorative background patterns
             Positioned(
               top: -50,
               right: -50,
@@ -85,8 +88,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
               ),
             ),
-            
-            // Branding Logo and title
             ScaleTransition(
               scale: _scaleAnimation,
               child: Column(
@@ -97,7 +98,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 2,
+                      ),
                     ),
                     child: const Icon(
                       Icons.explore_outlined,
@@ -146,14 +150,20 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   bool _isLoading = false;
   String _errorMsg = '';
 
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+
+    // Do not trim passwords. Preserve the exact entered value.
+    final password = _passwordController.text;
+
     if (email.isEmpty || password.isEmpty) {
-      setState(() => _errorMsg = 'Please enter all fields');
+      setState(() {
+        _errorMsg = 'Please enter all fields';
+      });
       return;
     }
 
@@ -162,28 +172,49 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMsg = '';
     });
 
-    final api = Provider.of<ApiService>(context, listen: false);
-    final success = await api.login(email, password);
+    try {
+      final api = Provider.of<ApiService>(context, listen: false);
 
-    setState(() => _isLoading = false);
+      final success = await api.login(email, password);
 
-    if (success) {
-      if (mounted) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
         Navigator.of(context).pushReplacementNamed('/dashboard');
+      } else {
+        setState(() {
+          _errorMsg =
+              'Invalid credentials. Please check your email and password.';
+        });
       }
-    } else {
-      setState(() => _errorMsg = 'Invalid credentials');
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _errorMsg = 'Unable to connect. Please try again.';
+      });
+
+      debugPrint('Login screen error: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.light,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -203,13 +234,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               const Text(
                 'Login to continue your smart plans.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppTheme.textSecondary,
-                ),
+                style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
               ),
               const SizedBox(height: 36),
-              
+
               if (_errorMsg.isNotEmpty) ...[
                 Container(
                   padding: const EdgeInsets.all(12),
@@ -225,9 +253,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       Expanded(
                         child: Text(
                           _errorMsg,
-                          style: const TextStyle(color: Colors.redAccent, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 14,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -237,45 +268,57 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   labelText: 'Email Address',
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
               ),
               const SizedBox(height: 16),
+
               TextField(
                 controller: _passwordController,
                 obscureText: true,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) {
+                  if (!_isLoading) {
+                    _handleLogin();
+                  }
+                },
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   prefixIcon: Icon(Icons.lock_outline),
                 ),
               ),
               const SizedBox(height: 12),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
                   child: const Text(
                     'Forgot Password?',
-                    style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: AppTheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _handleLogin,
-                  child: _isLoading 
-                      ? const CircularProgressIndicator(color: Colors.white) 
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Login'),
                 ),
               ),
               const SizedBox(height: 40),
-              
+
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -285,10 +328,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(color: AppTheme.textSecondary),
                     ),
                     InkWell(
-                      onTap: () => Navigator.of(context).pushNamed('/signup'),
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/signup');
+                      },
                       child: const Text(
                         'Sign Up',
-                        style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppTheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -298,22 +346,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _socialButton(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppTheme.border),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(icon, size: 28, color: AppTheme.textPrimary),
       ),
     );
   }
@@ -331,21 +363,29 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
   bool _isLoading = false;
   String _errorMsg = '';
 
   Future<void> _handleSignup() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirm = _confirmPasswordController.text.trim();
+
+    // Preserve the exact password entered by the user.
+    final password = _passwordController.text;
+    final confirm = _confirmPasswordController.text;
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      setState(() => _errorMsg = 'Please enter all fields');
+      setState(() {
+        _errorMsg = 'Please enter all fields';
+      });
       return;
     }
+
     if (password != confirm) {
-      setState(() => _errorMsg = 'Passwords do not match');
+      setState(() {
+        _errorMsg = 'Passwords do not match';
+      });
       return;
     }
 
@@ -354,28 +394,50 @@ class _SignupScreenState extends State<SignupScreen> {
       _errorMsg = '';
     });
 
-    final api = Provider.of<ApiService>(context, listen: false);
-    final success = await api.signup(name, email, password);
+    try {
+      final api = Provider.of<ApiService>(context, listen: false);
 
-    setState(() => _isLoading = false);
+      final success = await api.signup(name, email, password);
 
-    if (success) {
-      if (mounted) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
         Navigator.of(context).pushReplacementNamed('/dashboard');
+      } else {
+        setState(() {
+          _errorMsg = 'Registration failed. Try again.';
+        });
       }
-    } else {
-      setState(() => _errorMsg = 'Registration failed. Try again.');
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _errorMsg = 'Unable to connect. Please try again.';
+      });
+
+      debugPrint('Signup screen error: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.light,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -394,10 +456,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 8),
               const Text(
                 "Let's get started on optimizing travel.",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppTheme.textSecondary,
-                ),
+                style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
               ),
               const SizedBox(height: 28),
 
@@ -416,9 +475,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       Expanded(
                         child: Text(
                           _errorMsg,
-                          style: const TextStyle(color: Colors.redAccent, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 14,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -433,6 +495,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -442,6 +505,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+
               TextField(
                 controller: _passwordController,
                 obscureText: true,
@@ -451,6 +515,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: true,
@@ -466,8 +531,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _handleSignup,
-                  child: _isLoading 
-                      ? const CircularProgressIndicator(color: Colors.white) 
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Sign Up'),
                 ),
               ),
@@ -482,10 +547,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       style: TextStyle(color: AppTheme.textSecondary),
                     ),
                     InkWell(
-                      onTap: () => Navigator.of(context).pushNamed('/login'),
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/login');
+                      },
                       child: const Text(
                         'Log In',
-                        style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppTheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

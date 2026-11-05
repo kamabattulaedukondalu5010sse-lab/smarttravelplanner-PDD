@@ -26,3 +26,11 @@ mobile/ios/Flutter/.last_build_id
 **/.vscode/
 .DS_Store
 *.log
+
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+

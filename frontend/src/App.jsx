@@ -10,7 +10,7 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API_URL = 'https://pdd-4xpy.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const destCoordsMap = {
   Goa: [15.2993, 74.1240],

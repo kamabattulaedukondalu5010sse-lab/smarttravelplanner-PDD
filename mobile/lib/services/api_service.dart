@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/models.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://pdd-4xpy.onrender.com/api';
+  static const String baseUrl = 'http://10.0.2.2:5000/api';
   String? _token;
   User? _currentUser;
   bool _useMock = false;
@@ -232,86 +232,89 @@ class ApiService {
     };
   }
 
-  // Auth Functions
-  Future<bool> login(String email, String password) async {
-    if (_useMock) {
-      _token = 'mock_jwt_token';
-      _currentUser = User(
-        id: 'u1',
-        name: 'John Doe',
-        email: email,
-        avatar:
-            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
-        phone: '+91 98765 43210',
-      );
-      return true;
-    }
+  // Authentication Functions
 
+  Future<bool> login(String email, String password) async {
     try {
       final res = await http
           .post(
             Uri.parse('$baseUrl/auth/login'),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'email': email, 'password': password}),
+            body: jsonEncode({
+              'email': email.trim().toLowerCase(),
+              'password': password,
+            }),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
+
+      print('Login status: ${res.statusCode}');
+      print('Login response: ${res.body}');
 
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
-        _token = data['token'];
+
+        if (data['token'] == null || data['user'] == null) {
+          print('Login response is missing token or user');
+          return false;
+        }
+
+        _token = data['token'].toString();
         _currentUser = User.fromJson(data['user']);
+        _useMock = false;
         return true;
       }
+
+      print('Login failed with status: ${res.statusCode}');
       return false;
     } catch (e) {
-      _useMock = true; // Fallback to mock state
-      return login(email, password);
+      print('Login API error: $e');
+      return false;
     }
   }
 
   Future<bool> signup(String name, String email, String password) async {
-    if (_useMock) {
-      _token = 'mock_jwt_token';
-      _currentUser = User(
-        id: 'u1',
-        name: name,
-        email: email,
-        avatar:
-            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
-        phone: '',
-      );
-      return true;
-    }
-
     try {
       final res = await http
           .post(
             Uri.parse('$baseUrl/auth/signup'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
-              'name': name,
-              'email': email,
+              'name': name.trim(),
+              'email': email.trim().toLowerCase(),
               'password': password,
             }),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
-      if (res.statusCode == 210 || res.statusCode == 201) {
+      print('Signup status: ${res.statusCode}');
+      print('Signup response: ${res.body}');
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
         final data = jsonDecode(res.body);
-        _token = data['token'];
+
+        if (data['token'] == null || data['user'] == null) {
+          print('Signup response is missing token or user');
+          return false;
+        }
+
+        _token = data['token'].toString();
         _currentUser = User.fromJson(data['user']);
+        _useMock = false;
         return true;
       }
+
+      print('Signup failed with status: ${res.statusCode}');
       return false;
     } catch (e) {
-      _useMock = true;
-      return signup(name, email, password);
+      print('Signup API error: $e');
+      return false;
     }
   }
 
   void logout() {
     _token = null;
     _currentUser = null;
+    _useMock = false;
   }
 
   // Destination API
