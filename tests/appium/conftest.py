@@ -25,7 +25,7 @@ def apk_path():
     default_apk = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "mobile", "build", "app", "outputs", "flutter-apk", "app-debug.apk"))
     return os.getenv("APK_PATH", default_apk)
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def driver(app_package, app_activity, apk_path):
     """
     Initializes Appium 2.x UiAutomator2 driver session for Flutter Android app.

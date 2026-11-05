@@ -11,8 +11,9 @@ dotenv.config({
 // Import MongoDB connection
 const { connectDB, getIsConnected } = require('./config/db');
 
-// Import destination seeding function
+// Import destination and user seeding functions
 const { seedDestinations } = require('./controllers/destinationController');
+const { seedUsers } = require('./controllers/authController');
 
 // Initialize Express
 const app = express();
@@ -48,10 +49,11 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 
 // Attempt DB connection in background without blocking server availability
 connectDB()
-  .then(() => {
+  .then(async () => {
     if (getIsConnected()) {
       console.log('MongoDB connection successful.');
-      seedDestinations().catch(err => console.warn('Destination seed error:', err.message));
+      await seedDestinations().catch(err => console.warn('Destination seed error:', err.message));
+      await seedUsers().catch(err => console.warn('User seed error:', err.message));
     } else {
       console.log('Operating in mock database fallback mode.');
     }

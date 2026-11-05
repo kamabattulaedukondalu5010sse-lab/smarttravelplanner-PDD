@@ -10,17 +10,23 @@ export function getAuthToken(baseUrl, email = 'john@example.com', password = 'an
   };
 
   const res = http.post(url, payload, params);
-  const success = check(res, {
-    'login status is 200': (r) => r.status === 200,
-    'login returns token': (r) => r.json('token') !== undefined && r.json('token') !== null
-  });
 
-  if (success && res.json('token')) {
-    return res.json('token');
+  let token = null;
+  if (res.status === 200) {
+    try {
+      const data = JSON.parse(res.body);
+      token = data.token;
+    } catch (e) {
+      token = res.json('token');
+    }
   }
 
-  // Fallback simulated token for offline testing
-  return 'mock_k6_jwt_token_12345';
+  const success = check(res, {
+    'login status is 200': (r) => r.status === 200,
+    'login returns token': () => token !== null && token !== undefined
+  });
+
+  return token || 'mock_k6_jwt_token_12345';
 }
 
 export function getAuthHeaders(token) {

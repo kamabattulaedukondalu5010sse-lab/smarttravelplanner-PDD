@@ -3,7 +3,8 @@ import { runNormalScenario } from './scenarios/normal.js';
 import { runStressScenario, runSpikeScenario, runSoakScenario } from './scenarios/stress_spike_soak.js';
 import { generateHtmlReport } from './helpers/html_reporter.js';
 
-const PROFILE = __ENV.PROFILE || 'smoke';
+const rawProfile = __ENV.PROFILE || '';
+const PROFILE = (rawProfile && rawProfile.trim() !== '') ? rawProfile.trim().toLowerCase() : 'smoke';
 const BASE_URL = (__ENV.BASE_URL || 'http://127.0.0.1:5000').replace(/\/$/, '');
 const USER_VUS = parseInt(__ENV.VUS || '2');
 const USER_DURATION = __ENV.DURATION || '20s';
@@ -14,7 +15,7 @@ function getOptionsForProfile(profile) {
     http_req_duration: ['p(95)<500']
   };
 
-  switch (profile.toLowerCase()) {
+  switch (profile) {
     case 'normal':
       return {
         stages: [
@@ -61,7 +62,7 @@ function getOptionsForProfile(profile) {
 export const options = getOptionsForProfile(PROFILE);
 
 export default function () {
-  switch (PROFILE.toLowerCase()) {
+  switch (PROFILE) {
     case 'normal':
       runNormalScenario(BASE_URL);
       break;
